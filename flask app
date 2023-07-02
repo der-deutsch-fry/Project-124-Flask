@@ -1,0 +1,76 @@
+from flask import Flask,jsonify, request
+
+app = Flask(__name__)
+
+players = [
+    {
+        'id': 1,
+        'name': u'Joshua Kimmich',
+        'team': u'FC Bayern Munich', 
+        'nation': u'Germany',
+        'done': False
+    },
+    {
+        'id': 2,
+        'name': u'Xherdan Shaqiri',
+        'team': u'Chicago Fire', 
+        'nation': u'Switzerland',
+        'done': False
+    },
+    {
+        'id': 3,
+        'name': u'Marcus Rashford',
+        'team': u'Manchester United', 
+        'nation': u'England',
+        'done': False
+    },
+    {
+        'id': 4,
+        'name': u'Phil Foden',
+        'team': u'Manchester City FC', 
+        'nation': u'England',
+        'done': False
+    },
+    {
+        'id': 5,
+        'name': u'Sam Obisanya',
+        'team': u'AFC Richmond', 
+        'nation': u'Nigeria',
+        'done': False
+    }
+]
+
+@app.route("/")
+def hello_world():
+    return "Hello World!"
+
+@app.route("/add-data", methods=["POST"])
+def add_task():
+    if not request.json:
+        return jsonify({
+            "status":"error",
+            "message": "Please provide the data!"
+        },400)
+
+    task = {
+        'id': players[-1]['id'] + 1,
+        'name': request.json['name'],
+        'team': request.json.get('team', ""),
+        'nation': request.json.get('nation', ""),
+        'done': False
+    }
+    players.append(task)
+    return jsonify({
+        "status":"success",
+        "message": "Player added succesfully!"
+    })
+    
+
+@app.route("/get-data")
+def get_task():
+    return jsonify({
+        "data" : players
+    }) 
+
+if (__name__ == "__main__"):
+    app.run(debug=True)
